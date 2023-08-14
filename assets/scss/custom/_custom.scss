@@ -1,0 +1,15 @@
+// custom scss for styling the banner with customer information
+
+.customer-info-banner{
+    display:flex;
+    justify-content: space-around;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #C8A2C8;
+    border-radius: 5px;
+    background-color: #ffe6ee;
+}
+
+.customer-info-banner-item{
+font-size: 2em;
+}

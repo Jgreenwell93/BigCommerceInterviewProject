@@ -29,6 +29,15 @@ category:
     <h1 class="page-heading">{{category.name}}</h1>
     {{{region name="category_below_header"}}}
 {{/unless}}
+
+{{#if customer}}
+         <div  class="customer-info-banner">
+            <p class="customer-info-banner-item">{{customer.name}}</p>
+            <p class="customer-info-banner-item">{{customer.email}}</p>
+            <p class="customer-info-banner-item">{{customer.phone}}</p> 
+        </div>  
+{{/if}}
+
 {{{category.description}}}
 <div class="page">
     {{#if category.faceted_search_enabled}}
