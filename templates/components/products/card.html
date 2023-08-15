@@ -316,7 +316,8 @@
         {{/or}}
         {{/if}}
 
-        <a href="{{url}}" class="card-figure__link" aria-label="{{> components/products/product-info}}" data-event-type="product-click">
+        <a href="{{url}}" class="card-figure__link" aria-label="{{> components/products/product-info}}"
+            data-event-type="product-click">
             <div class="card-img-container">
                 {{> components/common/responsive-img
                 image=image
@@ -325,13 +326,20 @@
                 lazyload=theme_settings.lazyload_mode
                 default_image=theme_settings.default_image_product
                 }}
-                {{#if product.custom_fields.hover_image}}
-                    <img src="{{product.custom_fields.hover_image}}" alt="{{name}}" class="hover-image">
+                {{#if product.custom_fields.hoverImage}}
+                <img src="{{product.custom_fields.hoverImage}}" alt="{{name}}" class="hover-image">
                 {{/if}}
+
             </div>
         </a>
-        
-        
+        {{#if product.custom_fields.hoverImage}}
+    <script>
+        console.log("hoverImage is present and true");
+    </script>
+{{/if}}
+
+
+
 
         <figcaption class="card-figcaption">
             <div class="card-figcaption-body">
@@ -398,4 +406,3 @@
     </div>
 
 </article>
-
