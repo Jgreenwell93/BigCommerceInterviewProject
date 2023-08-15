@@ -1,7 +1,7 @@
 {
   "customLayouts": {
     "brand": {},
-    "category": {},
+    "category": {"_special-items": "/special-items/"},
     "page": {},
     "product": {}
   },
