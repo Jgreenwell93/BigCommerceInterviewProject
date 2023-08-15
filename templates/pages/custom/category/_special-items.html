@@ -68,12 +68,3 @@ category:
 {{/partial}}
 {{> layout/base}}
 
-<script>$(document).ready(function() {
-    $('.add-all-to-cart-button').on('click', function() {
-      $('.product-card').each(function() {
-        var productId = $(this).data('product-id'); // Adjust this based on your theme's structure
-        // Use BigCommerce Cart API to add the product to the cart
-      });
-    });
-  });
-  </script>

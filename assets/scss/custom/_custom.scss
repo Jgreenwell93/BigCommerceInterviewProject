@@ -15,21 +15,37 @@ font-size: 2em;
 }
 
 
-// custom css for hover effect
+// custom css for hover effect version 1
+
+// .card-img-container {
+//     position: relative;
+//   }
+  
+//   .hover-image {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     opacity: 0;
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   .card-img-container:hover .hover-image {
+//     opacity: 1;
+//   }
+  
 
 .card-img-container {
-    position: relative;
-  }
-  
-  .hover-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  
-  .card-img-container:hover .hover-image {
-    opacity: 1;
-  }
-  
+  position: relative;
+}
+
+.hover-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.card-figure__link:hover .hover-image {
+  opacity: 1;
+}
