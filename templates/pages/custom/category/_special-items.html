@@ -16,6 +16,14 @@ category:
 
 {{#partial "page"}}
 
+{{#if customer}}
+         <div  class="customer-info-banner">
+            <p class="customer-info-banner-item">{{customer.name}}</p>
+            <p class="customer-info-banner-item">{{customer.email}}</p>
+            <p class="customer-info-banner-item">{{customer.phone}}</p> 
+        </div>  
+{{/if}}
+
 {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
 {{#if category.image}}
     {{> components/common/responsive-img
@@ -30,13 +38,8 @@ category:
     {{{region name="category_below_header"}}}
 {{/unless}}
 
-<!-- {{#if customer}}
-         <div  class="customer-info-banner">
-            <p class="customer-info-banner-item">{{customer.name}}</p>
-            <p class="customer-info-banner-item">{{customer.email}}</p>
-            <p class="customer-info-banner-item">{{customer.phone}}</p> 
-        </div>  
-{{/if}} -->
+<button class="add-all-to-cart-button">Add All to Cart</button>
+
 
 {{{category.description}}}
 <div class="page">
@@ -64,3 +67,13 @@ category:
 
 {{/partial}}
 {{> layout/base}}
+
+<script>$(document).ready(function() {
+    $('.add-all-to-cart-button').on('click', function() {
+      $('.product-card').each(function() {
+        var productId = $(this).data('product-id'); // Adjust this based on your theme's structure
+        // Use BigCommerce Cart API to add the product to the cart
+      });
+    });
+  });
+  </script>
