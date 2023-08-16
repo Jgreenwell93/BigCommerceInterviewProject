@@ -40,6 +40,8 @@ category:
 
 <button class="add-all-to-cart-button">Add All to Cart</button>
 
+<button class="delete-all-from-cart-button">Delete all from cart</button>
+
 
 {{{category.description}}}
 <div class="page">
@@ -68,3 +70,86 @@ category:
 {{/partial}}
 {{> layout/base}}
 
+
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+  const addButton = document.querySelector('.add-all-to-cart-button');
+
+  if (addButton) {
+    addButton.addEventListener('click', function () {
+      const products = document.querySelectorAll('.product'); // Adjust selector to target your product elements
+      const productIds = [];
+
+      products.forEach(function (product) {
+        const productId = product.getAttribute('data-product-id'); // Adjust attribute name based on your product data
+        productIds.push(productId);
+      });
+
+      if (productIds.length > 0) {
+        addProductsToCart(productIds, function () {
+          displayPopup('All items added to cart');
+        });
+      }
+    });
+  }
+});
+
+function addProductsToCart(productIds, callback) {
+  const cartUrl = '/cart.php?action=add';
+  const formData = new FormData();
+
+  productIds.forEach((productId) => {
+    formData.append('product_id[]', productId);
+    formData.append('qty[]', '1'); // You can adjust the quantity as needed
+  });
+
+  fetch(cartUrl, {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      // Handle the response data if needed
+      callback();
+    })
+    .catch(error => {
+      console.error('Error adding products to cart:', error);
+    });
+}
+
+function displayPopup(message) {
+  // Implement the logic to display a popup message here
+  // This could be a custom implementation or using a third-party library
+  alert(message); // For a simple popup, but you might want to use a more sophisticated approach
+}
+
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const deleteButton = document.getElementById('delete-cart-button');
+
+      deleteButton.addEventListener('click', function () {
+        const storeHash = 'your_store_hash';
+        const cartId = 'your_cart_id';
+        const authToken = 'your_auth_token';
+
+        const url = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}`;
+
+        const options = {
+          method: 'DELETE',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Auth-Token': authToken
+          }
+        };
+
+        fetch(url, options)
+          .then(res => res.json())
+          .then(json => console.log(json))
+          .catch(err => console.error('error:', err));
+      });
+    });
+  </script>

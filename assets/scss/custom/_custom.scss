@@ -1,55 +1,47 @@
 // custom scss for styling the banner with customer information
 
-.customer-info-banner{
-    display:flex;
-    justify-content: space-around;
-    border-style: solid;
-    border-width: 5px;
-    border-color: #C8A2C8;
-    border-radius: 5px;
-    background-color: #ffe6ee;
+.customer-info-banner {
+  display: flex;
+  justify-content: space-around;
+  border-style: solid;
+  border-width: 5px;
+  border-color: #C8A2C8;
+  border-radius: 5px;
+  background-color: #ffe6ee;
 }
 
-.customer-info-banner-item{
-font-size: 2em;
+.customer-info-banner-item {
+  font-size: 2em;
 }
 
 
-// custom css for hover effect version 1
+// custom scss for hover effect
 
-// .card-img-container {
-//     position: relative;
-//   }
-  
-//   .hover-image {
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     opacity: 0;
-//     transition: opacity 0.3s ease;
-//   }
-  
-//   .card-img-container:hover .hover-image {
-//     opacity: 1;
-//   }
-  
-
-.card-img-container {
-  position: relative;
-}
-
+// keeps the hover image hidden until hovered and eases it in as a fade effect
+// has all the same scss applied to it as the main image to guarentee perfect position
 .hover-image {
   position: absolute;
-  top: 0;
-  left: 0;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.5s ease;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  right: 0;
+  top: 0;
+  border: 0;
+  font-family: "object-fit: contain;";
+  max-height: 100%;
+  -o-object-fit: contain;
+  object-fit: contain;
+  width: 100%;
 }
 
-.card-figure__link:hover .hover-image {
+// on hover reveals the image
+.card-figure:hover .hover-image {
   opacity: 1;
 }
 
-.card-figcaption-button{
+// keeps the buttons on hover as the top most element
+.card-figcaption-button {
   z-index: 10;
 }
