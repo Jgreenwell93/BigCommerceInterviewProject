@@ -77,84 +77,118 @@ category:
 
 
 
-<script>
-   document.addEventListener('DOMContentLoaded', function () {
-  const addButton = document.querySelector('.add-all-to-cart-button');
+<!-- <script>
+  const express = require('express');
+const fetch = require('node-fetch');
 
-  if (addButton) {
-    addButton.addEventListener('click', function () {
-      const products = document.querySelectorAll('.product'); // Adjust selector to target your product elements
-      const productIds = [];
+const app = express();
+const port = 3000;
 
-      products.forEach(function (product) {
-        const productId = product.getAttribute('data-product-id'); // Adjust attribute name based on your product data
-        productIds.push(productId);
-      });
+// Replace these values with your actual BigCommerce API credentials
+const clientId = 'dv5mzo7p78jk7dgme249yyanrk879tq';
+const accessToken = '7n5y2kwrt9wai1kh96qnheci2msowrj';
+// could build a function to grab the category id of the specifc 
+// category you are in to apply it to more than just this single page, but this works for the mvp
+const categoryId = '24';
+const storeHash = 'jcgpxva7ts';
 
-      if (productIds.length > 0) {
-        addProductsToCart(productIds, function () {
-          displayPopup('All items added to cart');
-        });
-      }
+app.get('/add-all-to-cart', async (req, res) => {
+  try {
+    // Step 3: Get products from a specific category using BigCommerce API
+    const response = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/catalog/products?categories:in=${categoryId}`, {
+      method: 'GET',
+      headers: {
+        'X-Auth-Client': clientId,
+        'X-Auth-Token': accessToken,
+      },
     });
+
+    const products = await response.json();
+
+    // Step 4: Add products to the cart using BigCommerce API
+    for (const product of products.data) {
+      await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/carts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Client': clientId,
+          'X-Auth-Token': accessToken,
+        },
+        body: JSON.stringify({
+          line_items: [
+            {
+              product_id: product.id,
+              quantity: 1,
+            },
+          ],
+        }),
+      });
+    }
+
+    res.send('All products added to cart successfully.');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('An error occurred.');
   }
 });
 
-function addProductsToCart(productIds, callback) {
-  const cartUrl = '/cart.php?action=add';
-  const formData = new FormData();
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
-  productIds.forEach((productId) => {
-    formData.append('product_id[]', productId);
-    formData.append('qty[]', '1'); // You can adjust the quantity as needed
-  });
+</script> -->
 
-  fetch(cartUrl, {
-    method: 'POST',
-    body: formData
-  })
-    .then(response => response.text())
-    .then(data => {
-      // Handle the response data if needed
-      callback();
-    })
-    .catch(error => {
-      console.error('Error adding products to cart:', error);
-    });
-}
+<!-- <script>
+  document.addEventListener("DOMContentLoaded", function () {
+  const addButton = document.querySelector(".add-all-to-cart-button");
 
-function displayPopup(message) {
-  // Implement the logic to display a popup message here
-  // This could be a custom implementation or using a third-party library
-  alert(message); // For a simple popup, but you might want to use a more sophisticated approach
-}
-
-
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const deleteButton = document.getElementById('delete-cart-button');
-
-      deleteButton.addEventListener('click', function () {
-        const storeHash = 'your_store_hash';
-        const cartId = 'your_cart_id';
-        const authToken = 'your_auth_token';
-
-        const url = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}`;
-
-        const options = {
-          method: 'DELETE',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Auth-Token': authToken
-          }
-        };
-
-        fetch(url, options)
-          .then(res => res.json())
-          .then(json => console.log(json))
-          .catch(err => console.error('error:', err));
+  addButton.addEventListener("click", async () => {
+    try {
+      const response = await fetch("/add-all-to-cart", {
+        method: "GET",
       });
-    });
-  </script>
+
+      if (response.ok) {
+        const result = await response.text();
+        alert(result); // Display a success message (you can customize this)
+      } else {
+        throw new Error("Request failed");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred. Please try again."); // Display an error message
+    }
+  });
+});
+
+</script> -->
+
+
+<script>
+  const secretStoreData = require('./secretStoreData');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const deleteButton = document.querySelector('.delete-all-cart-button');
+
+  deleteButton.addEventListener('click', () => {
+    const fetch = require('node-fetch');
+
+let url = 'https://api.bigcommerce.com/stores/jcgpxva7ts/v3/carts/[cartId]';
+
+let options = {
+  method: 'DELETE',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Auth-Token': secretStoreData.accessToken
+  }
+};
+
+fetch(url, options)
+  .then(res => res.json())
+  .then(json => console.log(json))
+  .catch(err => console.error('error:' + err));
+  });
+});
+</script>
+
