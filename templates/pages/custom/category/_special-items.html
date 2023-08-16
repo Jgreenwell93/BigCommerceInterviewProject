@@ -164,8 +164,8 @@ app.listen(port, () => {
 </script> -->
 
 
-<script>
-  const secretStoreData = require('./secretStoreData');
+<!-- <script>
+  const secretClientData = require('./secretClientData');
 
 document.addEventListener('DOMContentLoaded', () => {
   const deleteButton = document.querySelector('.delete-all-cart-button');
@@ -173,14 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
   deleteButton.addEventListener('click', () => {
     const fetch = require('node-fetch');
 
-let url = 'https://api.bigcommerce.com/stores/jcgpxva7ts/v3/carts/[cartId]';
+let url = 'https://api.bigcommerce.com/stores/jcgpxva7ts/v3/carts/';
 
 let options = {
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'X-Auth-Token': secretStoreData.accessToken
+    'X-Auth-Token': secretClientData.accessToken
   }
 };
 
@@ -190,5 +190,100 @@ fetch(url, options)
   .catch(err => console.error('error:' + err));
   });
 });
+</script> -->
+<!-- <script>
+ const fetch = require('node-fetch');
+const secretStoreData = require('./secretStoreData');
+const secretStoreData = require('./secretClientData');
+
+const storeHash = secretStoreData.storeHash; // Replace with your BigCommerce store hash
+const cartId = 'CURRENT_CART_ID'; // Replace with the current cart ID you want to delete from
+
+const url = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}`;
+
+const options = {
+  method: 'DELETE',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Auth-Token': secretClientData.accessToken
+  }
+};
+
+(async () => {
+  try {
+    const response = await fetch(url, options);
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      console.log('Items deleted from cart:', jsonResponse);
+    } else {
+      console.error('Failed to delete items from cart:', response.status, response.statusText);
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+})();
+
+</script> -->
+<script>
+  const fetch = require('node-fetch');
+  const secretStoreData = require('./secretStoreData');
+const secretStoreData = require('./secretClientData');
+
+const storeHash = secretStoreData.storeHash; 
+
+async function getCurrentCartId() {
+  const url = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts`;
+  const options = {
+    method: 'POST', // Use POST to create a new cart
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-Auth-Token': secretClientData.accessToken
+    }
+  };
+
+  try {
+    const response = await fetch(url, options);
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      return jsonResponse.data.id;
+    } else {
+      throw new Error(`Failed to create cart: ${response.status} ${response.statusText}`);
+    }
+  } catch (error) {
+    throw new Error(`Error creating cart: ${error.message}`);
+  }
+}
+
+(async () => {
+  try {
+    const cartId = await getCurrentCartId();
+    console.log('Current Cart ID:', cartId);
+
+    // Use the cartId variable as a template literal in the API call
+    const deleteUrl = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}`;
+
+    const deleteOptions = {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Auth-Token': secretClientData.accessToken
+      }
+    };
+
+    const deleteResponse = await fetch(deleteUrl, deleteOptions);
+    if (deleteResponse.ok) {
+      const deleteJsonResponse = await deleteResponse.json();
+      console.log('Items deleted from cart:', deleteJsonResponse);
+    } else {
+      console.error('Failed to delete items from cart:', deleteResponse.status, deleteResponse.statusText);
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+})();
+
 </script>
 
