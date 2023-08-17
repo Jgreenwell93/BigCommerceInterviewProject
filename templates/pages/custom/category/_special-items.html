@@ -100,13 +100,26 @@ class="category-header-image"
         return xhr.done();
       })
       .always(function () {
+        // Show a popup message
+        var popup = $('<div/>', {
+          text: "All items added to cart",
+          class: "popup"
+        });
+        $("body").append(popup);
+
+        // Automatically close the popup after a certain time
+        setTimeout(function () {
+          popup.fadeOut(function () {
+            $(this).remove();
+          });
+        }, 3000); // Adjust the time as needed
+
         // You can choose whether to navigate to the cart page or not
         // window.location = "/cart.php";
       });
 
   });
 </script>
-
 
 <!-- delete all from cart script -->
 <script>
@@ -168,30 +181,6 @@ async function deleteCurrentCart(cartId) {
     // Show a popup message
     var popup = $('<div/>', {
       text: "All items removed from cart",
-      class: "popup"
-    });
-    $("body").append(popup);
-
-    // Automatically close the popup after a certain time
-    setTimeout(function() {
-      popup.fadeOut(function() {
-        $(this).remove();
-      });
-    }, 3000); // Adjust the time as needed
-
-    // You can choose whether to navigate to the cart page or not
-    // window.location = "/cart.php";
-  });
-});
-
-</script>
-
-<script>
-  $(document).ready(function() {
-  $("button#add-all-cart").click(function() {
-    // Show a popup message
-    var popup = $('<div/>', {
-      text: "All items added to cart",
       class: "popup"
     });
     $("body").append(popup);
