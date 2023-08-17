@@ -1,48 +1,48 @@
 ---
 category:
-    shop_by_price: true
-    products:
-        limit: {{theme_settings.categorypage_products_per_page}}
+shop_by_price: true
+products:
+limit: {{theme_settings.categorypage_products_per_page}}
 ---
 {{inject "categoryProductsPerPage" theme_settings.categorypage_products_per_page}}
 {{#partial "head"}}
-    {{#if pagination.category.previous}}
-        <link rel="prev" href="{{pagination.category.previous}}">
-    {{/if}}
-    {{#if pagination.category.next}}
-        <link rel="next" href="{{pagination.category.next}}">
-    {{/if}}
+{{#if pagination.category.previous}}
+<link rel="prev" href="{{pagination.category.previous}}">
+{{/if}}
+{{#if pagination.category.next}}
+<link rel="next" href="{{pagination.category.next}}">
+{{/if}}
 {{/partial}}
 
 {{#partial "page"}}
 
 {{#if customer}}
-         <div  class="customer-info-banner">
-            <p class="customer-info-banner-item">{{customer.name}}</p>
-            <p class="customer-info-banner-item">{{customer.email}}</p>
-            <p class="customer-info-banner-item">{{customer.phone}}</p> 
-        </div>  
+<div class="customer-info-banner">
+  <p class="customer-info-banner-item">{{customer.name}}</p>
+  <p class="customer-info-banner-item">{{customer.email}}</p>
+  <p class="customer-info-banner-item">{{customer.phone}}</p>
+</div>
 {{/if}}
 
 {{> components/common/breadcrumbs breadcrumbs=breadcrumbs}}
 {{#if category.image}}
-    {{> components/common/responsive-img
-        image=category.image
-        fallback_size=theme_settings.zoom_size
-        lazyload=theme_settings.lazyload_mode
-        class="category-header-image"
-    }}
+{{> components/common/responsive-img
+image=category.image
+fallback_size=theme_settings.zoom_size
+lazyload=theme_settings.lazyload_mode
+class="category-header-image"
+}}
 {{/if}}
 {{#unless theme_settings.hide_category_page_heading }}
-    <h1 class="page-heading">{{category.name}}</h1>
-    {{{region name="category_below_header"}}}
+<h1 class="page-heading">{{category.name}}</h1>
+{{{region name="category_below_header"}}}
 {{/unless}}
 
 
 <!-- buttons to add all items to cart or delete all items from cart -->
 <div class="all-cart-buttons">
 
-  <button class="add-all-to-cart-button all-cart-button">Add All to Cart</button>
+  <button id="add-all-cart" class="add-all-to-cart-button all-cart-button">Add All to Cart</button>
 
   <button class="delete-all-cart-button all-cart-button">Delete all from cart</button>
 </div>
@@ -50,240 +50,65 @@ category:
 
 {{{category.description}}}
 <div class="page">
-    {{#if category.faceted_search_enabled}}
-        <aside class="page-sidebar" id="faceted-search-container">
-            {{> components/category/sidebar}}
-        </aside>
-    {{else if category.subcategories}}
-        <aside class="page-sidebar" id="faceted-search-container">
-            {{> components/category/sidebar}}
-        </aside>
-    {{else if category.shop_by_price}}
-        {{#if theme_settings.shop_by_price_visibility}}
-             <aside class="page-sidebar" id="faceted-search-container">
-                {{> components/category/sidebar}}
-            </aside>
-        {{/if}}
-    {{/if}}
+  {{#if category.faceted_search_enabled}}
+  <aside class="page-sidebar" id="faceted-search-container">
+    {{> components/category/sidebar}}
+  </aside>
+  {{else if category.subcategories}}
+  <aside class="page-sidebar" id="faceted-search-container">
+    {{> components/category/sidebar}}
+  </aside>
+  {{else if category.shop_by_price}}
+  {{#if theme_settings.shop_by_price_visibility}}
+  <aside class="page-sidebar" id="faceted-search-container">
+    {{> components/category/sidebar}}
+  </aside>
+  {{/if}}
+  {{/if}}
 
-    <div class="page-content" id="product-listing-container">
-        {{> components/category/product-listing}}
-        {{{region name="category_below_content"}}}
-    </div>
+  <div class="page-content" id="product-listing-container">
+    {{> components/category/product-listing}}
+    {{{region name="category_below_content"}}}
+  </div>
 </div>
 
 {{/partial}}
 {{> layout/base}}
 
 
-
 <!-- <script>
-  const express = require('express');
-const fetch = require('node-fetch');
+  const addToCartForm = Array.from(document.getElementsByTagName('form')).find(item => item.action.value === 'add' && item.action.name === 'action');
 
-const app = express();
-const port = 3000;
-
-// Replace these values with your actual BigCommerce API credentials
-const clientId = 'dv5mzo7p78jk7dgme249yyanrk879tq';
-const accessToken = '7n5y2kwrt9wai1kh96qnheci2msowrj';
-// could build a function to grab the category id of the specifc 
-// category you are in to apply it to more than just this single page, but this works for the mvp
-const categoryId = '24';
-const storeHash = 'jcgpxva7ts';
-
-app.get('/add-all-to-cart', async (req, res) => {
-  try {
-    // Step 3: Get products from a specific category using BigCommerce API
-    const response = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/catalog/products?categories:in=${categoryId}`, {
-      method: 'GET',
-      headers: {
-        'X-Auth-Client': clientId,
-        'X-Auth-Token': accessToken,
-      },
-    });
-
-    const products = await response.json();
-
-    // Step 4: Add products to the cart using BigCommerce API
-    for (const product of products.data) {
-      await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/carts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Client': clientId,
-          'X-Auth-Token': accessToken,
-        },
-        body: JSON.stringify({
-          line_items: [
-            {
-              product_id: product.id,
-              quantity: 1,
-            },
-          ],
-        }),
-      });
-    }
-
-    res.send('All products added to cart successfully.');
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('An error occurred.');
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
+  if (typeof addToCartForm === 'object' && addToCartForm.hasOwnProperty('product_id')) {
+    return addToCartForm.product_id.value;}
 </script> -->
 
-<!-- <script>
-  document.addEventListener("DOMContentLoaded", function () {
-  const addButton = document.querySelector(".add-all-to-cart-button");
+<script src="https://code.jquery.com/jquery-{version}.min.js">$("button#add-all-cart").click(function() {
+  const addToCartForms = Array.from(document.getElementsByTagName('form')).filter(item => 
+      item.action.value === 'add' && item.action.name === 'action' &&
+      typeof item.product_id === 'object' && item.product_id.hasOwnProperty('value')
+  );
 
-  addButton.addEventListener("click", async () => {
-    try {
-      const response = await fetch("/add-all-to-cart", {
-        method: "GET",
-      });
+  const asyncRequests = [];
 
-      if (response.ok) {
-        const result = await response.text();
-        alert(result); // Display a success message (you can customize this)
-      } else {
-        throw new Error("Request failed");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again."); // Display an error message
-    }
+  for (const form of addToCartForms) {
+      const productId = form.product_id.value;
+      asyncRequests.push(
+          $.get("/cart.php?action=add&product_id=" + productId)
+          .done(function(data, status, xhr) {
+              console.log('Item ' + productId + ' complete with status ' + status);
+          })
+      );
+  }
+
+  $.when.apply($, asyncRequests)
+  .fail(function(xhr, status, error) {
+      console.log('Oh noes, error with status ' + status + ' and error: ');
+      console.error(error);
+  })
+  .always(function() {
+      // Go to cart
+      window.location = "/cart.php";
   });
 });
-
-</script> -->
-
-
-<!-- <script>
-  const secretClientData = require('./secretClientData');
-
-document.addEventListener('DOMContentLoaded', () => {
-  const deleteButton = document.querySelector('.delete-all-cart-button');
-
-  deleteButton.addEventListener('click', () => {
-    const fetch = require('node-fetch');
-
-let url = 'https://api.bigcommerce.com/stores/jcgpxva7ts/v3/carts/';
-
-let options = {
-  method: 'DELETE',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'X-Auth-Token': secretClientData.accessToken
-  }
-};
-
-fetch(url, options)
-  .then(res => res.json())
-  .then(json => console.log(json))
-  .catch(err => console.error('error:' + err));
-  });
-});
-</script> -->
-<!-- <script>
- const fetch = require('node-fetch');
-const secretStoreData = require('./secretStoreData');
-const secretStoreData = require('./secretClientData');
-
-const storeHash = secretStoreData.storeHash; // Replace with your BigCommerce store hash
-const cartId = 'CURRENT_CART_ID'; // Replace with the current cart ID you want to delete from
-
-const url = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}`;
-
-const options = {
-  method: 'DELETE',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'X-Auth-Token': secretClientData.accessToken
-  }
-};
-
-(async () => {
-  try {
-    const response = await fetch(url, options);
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      console.log('Items deleted from cart:', jsonResponse);
-    } else {
-      console.error('Failed to delete items from cart:', response.status, response.statusText);
-    }
-  } catch (error) {
-    console.error('Error:', error.message);
-  }
-})();
-
-</script> -->
-<script>
-  const fetch = require('node-fetch');
-  const secretStoreData = require('./secretStoreData');
-const secretStoreData = require('./secretClientData');
-
-const storeHash = secretStoreData.storeHash; 
-
-async function getCurrentCartId() {
-  const url = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts`;
-  const options = {
-    method: 'POST', // Use POST to create a new cart
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Auth-Token': secretClientData.accessToken
-    }
-  };
-
-  try {
-    const response = await fetch(url, options);
-    if (response.ok) {
-      const jsonResponse = await response.json();
-      return jsonResponse.data.id;
-    } else {
-      throw new Error(`Failed to create cart: ${response.status} ${response.statusText}`);
-    }
-  } catch (error) {
-    throw new Error(`Error creating cart: ${error.message}`);
-  }
-}
-
-(async () => {
-  try {
-    const cartId = await getCurrentCartId();
-    console.log('Current Cart ID:', cartId);
-
-    // Use the cartId variable as a template literal in the API call
-    const deleteUrl = `https://api.bigcommerce.com/stores/${storeHash}/v3/carts/${cartId}`;
-
-    const deleteOptions = {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Auth-Token': secretClientData.accessToken
-      }
-    };
-
-    const deleteResponse = await fetch(deleteUrl, deleteOptions);
-    if (deleteResponse.ok) {
-      const deleteJsonResponse = await deleteResponse.json();
-      console.log('Items deleted from cart:', deleteJsonResponse);
-    } else {
-      console.error('Failed to delete items from cart:', deleteResponse.status, deleteResponse.statusText);
-    }
-  } catch (error) {
-    console.error(error.message);
-  }
-})();
-
 </script>
-
