@@ -77,74 +77,137 @@ class="category-header-image"
 
 
 <!-- add all to cart script -->
-  <script>
-    // when #add-all-cart is clicked...
-    $("button#add-all-cart").click(function() {
-     
-      // add product id 123
-      $.get("/cart.php?action=add&product_id=112")
-      .done(function(data, status, xhr) {
+<script>
+  // when #add-all-cart is clicked...
+  $("button#add-all-cart").click(function () {
+
+    // add product id 123
+    $.get("/cart.php?action=add&product_id=112")
+      .done(function (data, status, xhr) {
         console.log('first item complete with status ' + status);
       })
       // .then(function() {
       //   // add product id 456
       //   return $.get("/cart.php?action=add&product_id=112");
       // })
-      .done(function(data, status, xhr) {
+      .done(function (data, status, xhr) {
         console.log('second item complete with status ' + status);
       })
       // chain more async GET requests using .then & .done
-      .fail(function(xhr, status, error) {
+      .fail(function (xhr, status, error) {
         console.log('oh noes, error with status ' + status + ' and error: ');
         console.error(error);
         return xhr.done();
       })
-      .always(function() {
-        // Show a popup message
-        var popup = $('<div/>', {
-          text: "All items added to cart",
-          class: "popup"
-        });
-        $("body").append(popup);
-  
-        // Automatically close the popup after a certain time
-        setTimeout(function() {
-          popup.fadeOut(function() {
-            $(this).remove();
-          });
-        }, 3000); // Adjust the time as needed
-  
+      .always(function () {
         // You can choose whether to navigate to the cart page or not
         // window.location = "/cart.php";
       });
-     
+
+  });
+</script>
+
+
+<!-- delete all from cart script -->
+<script>
+  $("button#delete-all-cart").click(async function() {
+    try {
+        const cartId = await getCartId();
+        await deleteCurrentCart(cartId);
+        console.log("Both functions completed successfully.");
+        
+    } catch (error) {
+        console.error("An error occurred:", error);
+    }
+});
+
+async function getCartId() {
+  const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    return fetch('https://joseph-greenwell.mybigcommerce.com/api/storefront/carts', options)
+      .then(response => response.json())
+      .then(data => {
+        const cartId = data[0].id; // Assuming the API returns an array of objects
+        return cartId;
+      })
+      .catch(err => {
+        console.error(err);
+        throw err;
+      });
+}
+
+async function deleteCurrentCart(cartId) {
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  return fetch(`https://joseph-greenwell.mybigcommerce.com/api/storefront/carts/${cartId}`, options)
+    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+      return response; // Return the response for potential future use
+    })
+    .catch(err => {
+      console.error(err);
+      throw err;
     });
-  </script>
+}
 
-  <!-- delete all from cart script -->
-  <script>
-   const fetchCartId = async () => {
-  const options = { method: 'GET', headers: { 'Content-Type': 'application/json' } };
+</script>
+<script>
+  $(document).ready(function() {
+  $("button#delete-all-cart").click(function() {
+    // Show a popup message
+    var popup = $('<div/>', {
+      text: "All items removed from cart",
+      class: "popup"
+    });
+    $("body").append(popup);
 
-  try {
-    const response = await fetch('https://yourstore.example.com/api/storefront/carts', options);
-    const data = await response.json();
-    return data; // This assumes that the response contains a "cartId" field
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
+    // Automatically close the popup after a certain time
+    setTimeout(function() {
+      popup.fadeOut(function() {
+        $(this).remove();
+      });
+    }, 3000); // Adjust the time as needed
 
-(async () => {
-  const cartData = await fetchCartId();
-  if (cartData) {
-    const cartId = cartData.cartId;
-    console.log('Cart ID:', cartId);
-  } else {
-    console.log('Failed to fetch cart data.');
-  }
-})();
+    // You can choose whether to navigate to the cart page or not
+    // window.location = "/cart.php";
+  });
+});
 
-    </script>
-    
+</script>
+
+<script>
+  $(document).ready(function() {
+  $("button#add-all-cart").click(function() {
+    // Show a popup message
+    var popup = $('<div/>', {
+      text: "All items added to cart",
+      class: "popup"
+    });
+    $("body").append(popup);
+
+    // Automatically close the popup after a certain time
+    setTimeout(function() {
+      popup.fadeOut(function() {
+        $(this).remove();
+      });
+    }, 3000); // Adjust the time as needed
+
+    // You can choose whether to navigate to the cart page or not
+    // window.location = "/cart.php";
+  });
+});
+
+</script>
+
+
