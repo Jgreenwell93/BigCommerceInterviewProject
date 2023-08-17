@@ -76,6 +76,46 @@ class="category-header-image"
 {{> layout/base}}
 
 
+<!-- custom javascript not placed in own folder for easier vieweing for interview review -->
+
+
+<script>
+  function deleteButtonVisibility(Items) {
+    const hasValues = Items.length > 0;
+    const deleteButton = document.getElementById('delete-all-cart');
+
+    if (hasValues) {
+      deleteButton.style.display = 'block';
+    } else {
+      deleteButton.style.display = 'none';
+    }
+  }
+
+  function updateDeleteButtonVisibility() {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    fetch('https://joseph-greenwell.mybigcommerce.com/api/storefront/carts', options)
+      .then(response => response.json())
+      .then(response => {
+        const Items = response;
+        deleteButtonVisibility(Items);
+      })
+      .catch(err => console.error(err));
+  }
+
+  // Call the function on page load
+  window.onload = function () {
+    updateDeleteButtonVisibility();
+  };
+</script>
+
+
+
 <!-- add all to cart script -->
 <script>
   // when #add-all-cart is clicked...
@@ -92,6 +132,8 @@ class="category-header-image"
       // })
       .done(function (data, status, xhr) {
         console.log('second item complete with status ' + status);
+        // after adds all items to carts rechecks for cart items and if true displays delete all button
+        updateDeleteButtonVisibility();
       })
       // chain more async GET requests using .then & .done
       .fail(function (xhr, status, error) {
@@ -123,19 +165,28 @@ class="category-header-image"
 
 <!-- delete all from cart script -->
 <script>
-  $("button#delete-all-cart").click(async function() {
-    try {
-        const cartId = await getCartId();
-        await deleteCurrentCart(cartId);
-        console.log("Both functions completed successfully.");
-        
-    } catch (error) {
-        console.error("An error occurred:", error);
-    }
-});
+  // creates a pop up on click
+  function showDeleteAllCartPopup() {
+    // Show a popup message
+    var popup = $('<div/>', {
+      text: "All items removed from cart",
+      class: "popup"
+    });
+    $("body").append(popup);
 
-async function getCartId() {
-  const options = {
+    // Automatically close the popup after a certain time
+    setTimeout(function () {
+      popup.fadeOut(function () {
+        $(this).remove();
+      });
+    }, 3000); // Adjust the time as needed
+  }
+
+
+  // actual delete function
+
+  function getCartId() {
+    const options = {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -152,51 +203,42 @@ async function getCartId() {
         console.error(err);
         throw err;
       });
-}
+  }
 
-async function deleteCurrentCart(cartId) {
-  const options = {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
+  function deleteCurrentCart(cartId) {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
 
-  return fetch(`https://joseph-greenwell.mybigcommerce.com/api/storefront/carts/${cartId}`, options)
-    .then(response => response.json())
-    .then(response => {
-      console.log(response);
-      return response; // Return the response for potential future use
-    })
-    .catch(err => {
-      console.error(err);
-      throw err;
-    });
-}
-
-</script>
-<script>
-  $(document).ready(function() {
-  $("button#delete-all-cart").click(function() {
-    // Show a popup message
-    var popup = $('<div/>', {
-      text: "All items removed from cart",
-      class: "popup"
-    });
-    $("body").append(popup);
-
-    // Automatically close the popup after a certain time
-    setTimeout(function() {
-      popup.fadeOut(function() {
-        $(this).remove();
+    return fetch(`https://joseph-greenwell.mybigcommerce.com/api/storefront/carts/${cartId}`, options)
+      .then(response => response.json())
+      .then(responseData => {
+        console.log(responseData);
+        return responseData; // Return the response for potential future use
+      })
+      // after everything is deleted show a confirmation popup
+      .then(showDeleteAllCartPopup())
+      .then(updateDeleteButtonVisibility())
+      .catch(err => {
+        console.error(err);
+        throw err;
       });
-    }, 3000); // Adjust the time as needed
+  }
 
-    // You can choose whether to navigate to the cart page or not
-    // window.location = "/cart.php";
+  $("button#delete-all-cart").click(function () {
+    getCartId()
+      .then(cartId => deleteCurrentCart(cartId))
+      .then(responseData => {
+        console.log("Both functions completed successfully.");
+      })
+      .catch(error => {
+        console.error("An error occurred:", error);
+      });
   });
-});
+
+
 
 </script>
-
-
