@@ -44,7 +44,7 @@ class="category-header-image"
 
   <button type="button" id="add-all-cart" class="add-all-to-cart-button all-cart-button">Add All to Cart</button>
 
-  <button type="button" class="delete-all-cart-button all-cart-button">Delete all from cart</button>
+  <button type="button" id="delete-all-cart" class="delete-all-cart-button all-cart-button">Remove All Items</button>
 </div>
 
 
@@ -76,6 +76,7 @@ class="category-header-image"
 {{> layout/base}}
 
 
+<!-- add all to cart script -->
   <script>
     // when #add-all-cart is clicked...
     $("button#add-all-cart").click(function() {
@@ -85,10 +86,10 @@ class="category-header-image"
       .done(function(data, status, xhr) {
         console.log('first item complete with status ' + status);
       })
-      .then(function() {
-        // add product id 456
-        return $.get("/cart.php?action=add&product_id=112");
-      })
+      // .then(function() {
+      //   // add product id 456
+      //   return $.get("/cart.php?action=add&product_id=112");
+      // })
       .done(function(data, status, xhr) {
         console.log('second item complete with status ' + status);
       })
@@ -119,3 +120,31 @@ class="category-header-image"
      
     });
   </script>
+
+  <!-- delete all from cart script -->
+  <script>
+   const fetchCartId = async () => {
+  const options = { method: 'GET', headers: { 'Content-Type': 'application/json' } };
+
+  try {
+    const response = await fetch('https://yourstore.example.com/api/storefront/carts', options);
+    const data = await response.json();
+    return data; // This assumes that the response contains a "cartId" field
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+(async () => {
+  const cartData = await fetchCartId();
+  if (cartData) {
+    const cartId = cartData.cartId;
+    console.log('Cart ID:', cartId);
+  } else {
+    console.log('Failed to fetch cart data.');
+  }
+})();
+
+    </script>
+    
