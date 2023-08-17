@@ -3,6 +3,9 @@ URL: https://joseph-greenwell.mybigcommerce.com/?ctk=421abaa6-0e27-4411-99e2-b46
 Preview Code: 4y3hfk7rq0
 <br>
 
+Preview Video: https://drive.google.com/file/d/1Z37pCz6BgehxP1IBfOnKtKfr_ykuNDJV/view?usp=sharing
+<br>
+
 Preview Code:
 So starting with the hover card i modified the card compnent to filter through the custom fields of a card and
 check for any custom_fields with the name of 'hover_image' and used it to render the image with handlebars
