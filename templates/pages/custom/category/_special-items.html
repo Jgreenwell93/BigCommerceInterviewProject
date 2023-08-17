@@ -16,6 +16,7 @@ limit: {{theme_settings.categorypage_products_per_page}}
 
 {{#partial "page"}}
 
+<!-- if there is a customer, show the following details in a banner -->
 {{#if customer}}
 <div class="customer-info-banner">
   <p class="customer-info-banner-item">{{customer.name}}</p>
