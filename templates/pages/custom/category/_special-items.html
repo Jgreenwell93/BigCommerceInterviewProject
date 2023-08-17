@@ -42,9 +42,9 @@ class="category-header-image"
 <!-- buttons to add all items to cart or delete all items from cart -->
 <div class="all-cart-buttons">
 
-  <button id="add-all-cart" class="add-all-to-cart-button all-cart-button">Add All to Cart</button>
+  <button type="button" id="add-all-cart" class="add-all-to-cart-button all-cart-button">Add All to Cart</button>
 
-  <button class="delete-all-cart-button all-cart-button">Delete all from cart</button>
+  <button type="button" class="delete-all-cart-button all-cart-button">Delete all from cart</button>
 </div>
 
 
@@ -83,7 +83,7 @@ class="category-header-image"
     return addToCartForm.product_id.value;}
 </script> -->
 
-<script src="https://code.jquery.com/jquery-{version}.min.js">$("button#add-all-cart").click(function() {
+<!-- <script src="https://code.jquery.com/jquery-{version}.min.js">$("button#add-all-cart").click(function() {
   const addToCartForms = Array.from(document.getElementsByTagName('form')).filter(item => 
       item.action.value === 'add' && item.action.name === 'action' &&
       typeof item.product_id === 'object' && item.product_id.hasOwnProperty('value')
@@ -111,4 +111,34 @@ class="category-header-image"
       window.location = "/cart.php";
   });
 });
-</script>
+</script> -->
+
+<script>
+  // when #add-all-cart is clicked...
+  $("button#add-all-cart").click(function() {
+   
+    // add product id 123
+      return $.get("/cart.php?action=add&product_id=112")
+    .done(function(data, status, xhr) {
+      console.log('first item complete with status ' + status);
+    })
+    .then(function() {
+      // add product id 456
+      return $.get("/cart.php?action=add&product_id=112");
+    })
+    .done(function(data, status, xhr) {
+      console.log('second item complete with status ' + status);
+    })
+    // chain more async GET requests using .then & .done
+    .fail(function(xhr, status, error) {
+      console.log('oh noes, error with status ' + status + ' and error: ');
+      console.error(error);
+      return xhr.done();
+    })
+    .always(function() {
+      // go to cart
+      return window.location = "/cart.php";
+    });
+   
+  });
+  </script>
